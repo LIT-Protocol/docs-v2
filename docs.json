@@ -52,7 +52,6 @@
             "pages": [
               "sdk-reference/client-setup/lit-client",
               "sdk-reference/client-setup/auth-manager",
-              "sdk-reference/client-setup/storage-options",
               "sdk-reference/client-setup/payment-setup"
             ]
           },

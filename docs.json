@@ -100,6 +100,12 @@
             ]
           },
           {
+            "group": "Access Control Conditions",
+            "pages": [
+              "sdk/sdk-reference/access-control-conditions/functions/createAccBuilder"
+            ]
+          },
+          {
             "group": "Reference",
             "pages": [
               {
@@ -109,10 +115,6 @@
               {
                 "group": "@lit-protocol/auth@beta",
                 "pages": ["sdk/sdk-reference/auth/functions/createAuthManager"]
-              },
-              {
-                "group": "@lit-protocol/access-control-conditions@beta",
-                "pages": ["sdk/sdk-reference/access-control-conditions/functions/createAccBuilder"]
               }
             ]
           }

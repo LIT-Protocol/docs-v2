@@ -2,18 +2,30 @@
 title: "Auth Services Setup"
 description: "Configure auth services for the Lit JS SDK"
 ---
+<Note>
+  💰 Need Test Tokens? Visit the [Chronicle Yellowstone
+  Faucet](https://chronicle-yellowstone-faucet.getlit.dev/) to get test tokens
+  for your EOA account.
+</Note>
 
-# Naga Dev Network
+## Overview
+
+Create your own authentication infrastructure using the Lit Protocol Auth Services package. This provides two core services:
+
+1. Auth Server for PKP minting with various auth methods, and a Worker for background minting operations.
+2. Login Server for OAuth flows
+
+# Dev Network
 
 On the naga-dev network, you don't need to setup these services yourself, they are already set up for you.
 
-Login Server:
+### Login Server
 
 ```bash
 https://login.litgateway.com
 ```
 
-Auth Server:
+### Auth Server
 
 ```bash
 https://naga-auth-service.onrender.com
@@ -26,14 +38,7 @@ https://naga-auth-service.onrender.com
   these services yourself.
 </Warning>
 
-## Overview
-
-Create your own authentication infrastructure using the Lit Protocol Auth Services package. This provides two core services:
-
-1. Auth Server for PKP minting with various auth methods, and a Worker for background minting operations.
-2. Login Server for OAuth flows
-
-## Install the SDK
+### Install the SDK
 
 Run the following command to install the SDK: (Only available using Bun to install at the moment.)
 
@@ -45,7 +50,7 @@ bun add @lit-protocol/auth-services@beta
 
 </CodeGroup>
 
-# Lit Auth Service
+### Lit Auth Service
 
 <Steps>
   <Step title="Create the Lit Auth Service">
@@ -114,7 +119,7 @@ STYTCH_SECRET=your_stytch_secret
 </Steps>
 
 
-# Lit Login Server
+### Lit Login Server
 
 <Steps>
   <Step title="Create the Lit Login Server">

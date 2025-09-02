@@ -1043,3 +1043,23 @@ Create a Viem-compatible account backed by a PKP.
   </Expandable>
 </ResponseField>
 
+### getChainConfig
+
+Returns the chain configuration for the current network.
+
+#### Parameters
+
+none
+
+#### Returns
+
+<ResponseField name="result" type="ChainConfig">
+  <Expandable title="properties">
+    <ResponseField name="viemConfig" type="Chain">
+      Viem chain configuration used by the returned account.
+    </ResponseField>
+    <ResponseField name="rpcUrl" type="string">
+      RPC URL for the chain.  
+    </ResponseField>
+  </Expandable>
+</ResponseField>

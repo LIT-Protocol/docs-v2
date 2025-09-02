@@ -90,6 +90,10 @@
               {
                 "group": "@lit-protocol/lit-client@beta",
                 "pages": ["sdk/sdk-reference/lit-client/functions/createLitClient"]
+              },
+              {
+                "group": "@lit-protocol/auth@beta",
+                "pages": ["sdk/sdk-reference/auth/functions/createAuthManager"]
               }
             ]
           }

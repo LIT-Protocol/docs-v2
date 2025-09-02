@@ -3,12 +3,29 @@ title: "Encrypt and Decrypt"
 description: "Demonstrates the complete encrypt/decrypt flow using official access control conditions builder. Alice encrypts data, Bob decrypts it using properly configured access control conditions."
 ---
 
-# Overview
-
 <Tip>
   If you are here to see how auth context is consumed here, jump to
   [Decrypt](#decrypts-data).
 </Tip>
+
+
+## Overview
+
+<CodeGroup>
+```bash npm
+npm install @lit-protocol/access-control-conditions@beta
+```
+```bash yarn
+yarn add @lit-protocol/access-control-conditions@beta
+```
+```bash pnpm
+pnpm add @lit-protocol/access-control-conditions@beta
+```
+```bash bun 
+bun add @lit-protocol/access-control-conditions@beta
+```
+</CodeGroup>
+
 
 🔐 Encrypt & Decrypt Flow
 
@@ -16,6 +33,10 @@ Alice can encrypt without authentication, Bob must authenticate to decrypt.
 
 - Alice: Encrypts → No AuthContext needed
 - Bob: Decrypts → Requires AuthContext
+
+---
+
+# Example Walkthrough
 
 # 👩🏼 Alice
 
@@ -52,6 +73,10 @@ console.log("🙋‍♂️ BobsAccount:", BobsAccount.address);
 # 👩🏼 Alice Defines Access Rules
 
 Alice decides who can decrypt her encrypted data
+
+<Tip>
+  See SDK Reference for more details on the Access Control Conditions Builder. [Access Control Conditions Builder Reference](/sdk/sdk-reference/access-control-conditions/functions/createAccBuilder)
+</Tip>
 
 ### Build Access Control Conditions
 
@@ -104,12 +129,11 @@ const authContext = await authManager.createEoaAuthContext({
 Alice configures and encrypts the data with access control conditions
 
 ```ts
-
 // Alice encrypts data (no AuthContext needed)
 const encryptedData = await litClient.encrypt({
-  dataToEncrypt: 'Hello, my love! ❤️',
+  dataToEncrypt: "Hello, my love! ❤️",
   unifiedAccessControlConditions: accs,
-  chain: 'ethereum',
+  chain: "ethereum",
   // metadata: { dataType: 'string' }, // auto-inferred
 });
 ```
@@ -126,6 +150,6 @@ const decryptedResponse = await litClient.decrypt({
   data: encryptedData,
   unifiedAccessControlConditions: accs,
   authContext: bobAuthContext,
-  chain: 'ethereum',
+  chain: "ethereum",
 });
 ```

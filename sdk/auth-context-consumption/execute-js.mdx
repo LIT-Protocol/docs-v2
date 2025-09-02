@@ -24,9 +24,9 @@ const litActionCode = `(async () => {
 
 // 2. Execute Lit Action with custom code
 const result = await litClient.executeJs({
-code: litActionCode,
-authContext: authContext,
-jsParams: parsedJsParams,
+  code: litActionCode,
+  authContext: authContext,
+  jsParams: parsedJsParams,
 });
 
 ````
@@ -39,7 +39,6 @@ const result = await litClient.executeJs({
   ipfsId: "QmYLeVmwJPVs7Uebk85YdVPivMyrvoeKR6X37kyVRZUXW4",
   authContext: authContext,
   jsParams: parsedJsParams,
-
 });
 ````
 

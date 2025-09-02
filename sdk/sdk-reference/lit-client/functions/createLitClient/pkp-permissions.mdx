@@ -18,10 +18,6 @@ const pkpPermissionsManager = await litClient.getPKPPermissionsManager({
 });
 ```
 
-### Why it exists
-
-Raw contract interactions for PKP permissions are verbose and easy to misconfigure. This manager abstracts encoding, idempotent updates, and normalised reads into a single, ergonomic API. It reduces integration risk, enforces least‑privilege by design, and offers helper checks and snapshots so applications can present and mutate permissions confidently.
-
 ### Core capabilities
 
 - **Read a unified context**: fetch a normalised snapshot of current permissions (addresses, actions, auth methods) with helper checks (e.g., is an address permitted?).
@@ -49,31 +45,33 @@ const ctx = await pkpPermissionsManager.getPermissionsContext();
 console.log(ctx.addresses, ctx.actions, ctx.authMethods);
 
 const isAddrAllowed = await pkpPermissionsManager.isPermittedAddress({
-  address: '0xabc...def',
+  address: "0xabc...def",
 });
 
 // 3) Manage an auth method and its scopes (requires PKP ownership)
 const addTx = await pkpPermissionsManager.addPermittedAuthMethod({
   authMethodType: 1, // EthWallet
-  authMethodId: '0x1234567890abcdef1234567890abcdef12345678',
+  authMethodId: "0x1234567890abcdef1234567890abcdef12345678",
   userPubkey:
-    '0x04abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef',
-  scopes: ['sign-anything'],
+    "0x04abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+  scopes: ["sign-anything"],
 });
 await addTx.receipt;
 
 // Remove a specific scope (e.g. scopeId 1) from that auth method
-const removeScopeTx = await pkpPermissionsManager.removePermittedAuthMethodScope({
-  authMethodType: 1,
-  authMethodId: '0x1234567890abcdef1234567890abcdef12345678',
-  scopeId: 1,
-});
+const removeScopeTx =
+  await pkpPermissionsManager.removePermittedAuthMethodScope({
+    authMethodType: 1,
+    authMethodId: "0x1234567890abcdef1234567890abcdef12345678",
+    scopeId: 1,
+  });
 await removeScopeTx.receipt;
 
 // Optionally remove the auth method entirely
-const removeAuthMethodTx = await pkpPermissionsManager.removePermittedAuthMethod({
-  authMethodType: 1,
-  authMethodId: '0x1234567890abcdef1234567890abcdef12345678',
-});
+const removeAuthMethodTx =
+  await pkpPermissionsManager.removePermittedAuthMethod({
+    authMethodType: 1,
+    authMethodId: "0x1234567890abcdef1234567890abcdef12345678",
+  });
 await removeAuthMethodTx.receipt;
 ```

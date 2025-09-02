@@ -50,10 +50,16 @@
           {
             "group": "Getting Started",
             "pages": [
-              "sdk/client-setup/lit-client",
-              "sdk/client-setup/auth-manager",
-              "sdk/client-setup/payment-setup",
-              "sdk/client-setup/auth-services"
+              {
+                "group": "Prerequisites",
+                "pages": [
+                  "sdk/getting-started/prerequisites/faucet"
+                ]
+              },
+              "sdk/getting-started/lit-client",
+              "sdk/getting-started/auth-manager",
+              "sdk/getting-started/payment-manager-setup",
+              "sdk/getting-started/auth-services"
             ]
           },
           {
@@ -89,7 +95,7 @@
             "pages":[
               "sdk/sdk-reference/lit-client/functions/createLitClient/pkp-viem-account",
               "sdk/sdk-reference/lit-client/functions/createLitClient/pkp-permissions",
-              "sdk/sdk-reference/lit-client/functions/createLitClient/pkp-read-helpers"
+              "sdk/sdk-reference/lit-client/functions/createLitClient/pkp-view-helpers"
             ]
           },
           {

@@ -15,7 +15,7 @@ description: "Use your PKP to sign a message with the selected chain and scheme.
 - `pubkey` is required. This is the public key of the PKP to sign with.
 </Note>
 
-# Example
+# Quick Example
 
 ```ts
 // The message string will be UTF-8 encoded before signing.
@@ -31,3 +31,40 @@ const signatures = await litClient.chain.raw.pkpSign({
   toSign: messageBytes, // UTF-8 encoded message
 });
 ```
+
+---
+
+# Available signing schemes
+
+### ECDSA Schemes
+
+| Scheme | Curve |
+|--------|-------|
+| `EcdsaK256Sha256` | secp256k1 |
+| `EcdsaP256Sha256` | NIST P‑256 |
+| `EcdsaP384Sha384` | NIST P‑384 |
+
+### EdDSA Schemes
+
+| Scheme | Curve |
+|--------|-------|
+| `SchnorrEd25519Sha512` | ed25519 |
+| `SchnorrEd448Shake256` | ed448 |
+
+### Schnorr Variants
+
+| Scheme | Curve |
+|--------|-------|
+| `SchnorrK256Taproot` | secp256k1 |
+| `SchnorrK256Sha256` | secp256k1 |
+| `SchnorrP256Sha256` | NIST P‑256 |
+| `SchnorrP384Sha384` | NIST P‑384 |
+
+### ZK/Privacy Schnorr Variants
+
+| Scheme | Curve |
+|--------|-------|
+| `SchnorrRistretto25519Sha512` | Ristretto25519 |
+| `SchnorrRedJubjubBlake2b512` | Jubjub |
+| `SchnorrRedDecaf377Blake2b512` | Decaf377 |
+| `SchnorrkelSubstrate` | sr25519 |

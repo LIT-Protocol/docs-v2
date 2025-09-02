@@ -87,8 +87,9 @@
           {
             "group": "PKP Wallet Management",
             "pages":[
+              "sdk/sdk-reference/lit-client/functions/createLitClient/pkp-viem-account",
               "sdk/sdk-reference/lit-client/functions/createLitClient/pkp-permissions",
-              "sdk/sdk-reference/lit-client/functions/createLitClient/pkp-viem-account"
+              "sdk/sdk-reference/lit-client/functions/createLitClient/pkp-read-helpers"
             ]
           },
           {

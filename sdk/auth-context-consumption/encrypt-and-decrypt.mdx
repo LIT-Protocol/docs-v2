@@ -8,8 +8,13 @@ description: "Demonstrates the complete encrypt/decrypt flow using official acce
   [Decrypt](#decrypts-data).
 </Tip>
 
+# Prerequisites
 
-## Overview
+<Note>
+- `authContext` is required. This is the result from the authentication flow.
+</Note>
+
+## Installation
 
 <CodeGroup>
 ```bash npm
@@ -26,6 +31,7 @@ bun add @lit-protocol/access-control-conditions@beta
 ```
 </CodeGroup>
 
+# Example Walkthrough
 
 🔐 Encrypt & Decrypt Flow
 
@@ -34,9 +40,6 @@ Alice can encrypt without authentication, Bob must authenticate to decrypt.
 - Alice: Encrypts → No AuthContext needed
 - Bob: Decrypts → Requires AuthContext
 
----
-
-# Example Walkthrough
 
 # 👩🏼 Alice
 
@@ -67,7 +70,7 @@ import { generatePrivateKey, privateKeyToAccount } from "viem/accounts";
 
 // Bob's account (recipient)
 const BobsAccount = privateKeyToAccount(generatePrivateKey());
-console.log("🙋‍♂️ BobsAccount:", BobsAccount.address);
+console.log("🧔🏻‍♂️ BobsAccount:", BobsAccount.address);
 ```
 
 # 👩🏼 Alice Defines Access Rules

@@ -8,6 +8,15 @@ description: "Use your PKP to sign a message with the selected chain and scheme.
   Reference](/sdk/sdk-reference/lit-client/functions/createLitClient#chain-raw-pkpsign)
 </Tip>
 
+# Prerequisites
+
+<Note>
+- `authContext` is required. This is the result from the authentication flow.
+- `pubkey` is required. This is the public key of the PKP to sign with.
+</Note>
+
+# Example
+
 ```ts
 // The message string will be UTF-8 encoded before signing.
 // Hashing (e.g., Keccak256 for Ethereum, SHA256 for Bitcoin)

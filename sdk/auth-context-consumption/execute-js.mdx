@@ -1,0 +1,46 @@
+---
+title: "Execute Javascript"
+description: "Execute custom Lit Actions using your authenticated context. Choose between custom code or IPFS-stored actions. The execution will automatically find the most optimised price, or you can specify a custom maximum price using the userMaxPrice parameter."
+---
+
+<Note>
+  SDK Parameter Structure: In this SDK version, all parameters are wrapped
+  inside a jsParams object. This allows you to access them as properties of
+  jsParams in your Lit Action, making validation and parameter management much
+  clearer.
+</Note>
+
+<Tip>
+  [📚 View Full LitActions API Documentation
+  →](https://actions-docs.litprotocol.com/)
+</Tip>
+
+<CodeGroup>
+```ts Inline JS Code
+// 1. Write your Lit Action code
+const litActionCode = `(async () => {
+  const { }
+})();`;
+
+// 2. Execute Lit Action with custom code
+const result = await litClient.executeJs({
+code: litActionCode,
+authContext: authContext,
+jsParams: parsedJsParams,
+});
+
+````
+
+```ts IPFS CID
+// 1. Pin your Lit Action to IPFS using eg. Pinata
+
+// 2. Execute Lit Action with IPFS CID
+const result = await litClient.executeJs({
+  ipfsId: "QmYLeVmwJPVs7Uebk85YdVPivMyrvoeKR6X37kyVRZUXW4",
+  authContext: authContext,
+  jsParams: parsedJsParams,
+
+});
+````
+
+</CodeGroup>

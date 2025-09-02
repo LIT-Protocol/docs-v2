@@ -1,0 +1,19 @@
+---
+title: 'PKP Sign'
+description: 'Use your PKP to sign a message with the selected chain and scheme. The signing operation will automatically find the most optimised price, or you can specify a custom maximum price using the userMaxPrice parameter.'
+---
+
+```ts
+// The message string will be UTF-8 encoded before signing.
+// Hashing (e.g., Keccak256 for Ethereum, SHA256 for Bitcoin)
+// is handled automatically by the Lit Protocol based on the selected chain.
+const messageBytes = new TextEncoder().encode(messageToSign);
+
+const signatures = await litClient.chain.raw.pkpSign({
+  chain: 'ethereum',         
+  signingScheme: 'EcdsaK256Sha256', 
+  pubKey: pkpInfo.pubkey,
+  authContext: authContext,
+  toSign: messageBytes,          // UTF-8 encoded message
+});
+```

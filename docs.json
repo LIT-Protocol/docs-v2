@@ -41,51 +41,56 @@
         ]
       },
       {
-        "tab": "SDK Reference",
+        "tab": "JS SDK",
         "groups": [
           {
-            "group": "SDK Reference",
-            "pages": ["sdk-reference/introduction"]
+            "group": "SDK",
+            "pages": ["sdk/introduction"]
           },
           {
             "group": "Getting Started",
             "pages": [
-              "sdk-reference/client-setup/lit-client",
-              "sdk-reference/client-setup/auth-manager",
-              "sdk-reference/client-setup/payment-setup"
+              "sdk/client-setup/lit-client",
+              "sdk/client-setup/auth-manager",
+              "sdk/client-setup/payment-setup",
+              "sdk/client-setup/auth-services"
             ]
           },
           {
             "group": "Authentication",
             "pages": [
-              "sdk-reference/auth/eoa-auth",
-              "sdk-reference/auth/pkp-native-auth",
-              "sdk-reference/auth/pkp-custom-auth"
+              "sdk/auth/eoa/eoa-auth",
+              {
+                "group": "PKP Native Auth",
+                "pages": [
+                  "sdk/auth/pkp-native-auth/pkp-eoa-auth",
+                  "sdk/auth/pkp-native-auth/pkp-google-auth",
+                  "sdk/auth/pkp-native-auth/pkp-discord-auth",
+                  "sdk/auth/pkp-native-auth/pkp-webauthn-auth",
+                  "sdk/auth/pkp-native-auth/pkp-stytch-email-otp-auth",
+                  "sdk/auth/pkp-native-auth/pkp-stytch-sms-otp-auth",
+                  "sdk/auth/pkp-native-auth/pkp-stytch-whatsapp-otp-auth",
+                  "sdk/auth/pkp-native-auth/pkp-stytch-2fa-totp-auth"
+                ]
+              },
+              "sdk/auth/pkp-custom-auth/pkp-custom-auth"
             ]
           },
           {
-            "group": "Auth Context",
+            "group": "Auth Context Consumption",
             "pages": [
-              "sdk-reference/auth-context/generation",
-              "sdk-reference/auth-context/consumption"
+              "sdk/auth-context-consumption/pkp-sign",
+              "sdk/auth-context-consumption/execute-js",
+              "sdk/auth-context-consumption/encrypt-and-decrypt"
             ]
-          }
-        ]
-      },
-      {
-        "tab": "API reference",
-        "groups": [
-          {
-            "group": "API documentation",
-            "pages": ["api-reference/introduction"]
           },
           {
-            "group": "Endpoint examples",
+            "group": "Reference",
             "pages": [
-              "api-reference/endpoint/get",
-              "api-reference/endpoint/create",
-              "api-reference/endpoint/delete",
-              "api-reference/endpoint/webhook"
+              {
+                "group": "@lit-protocol/lit-client@beta",
+                "pages": ["sdk/sdk-reference/lit-client/functions/createLitClient"]
+              }
             ]
           }
         ]

@@ -1,0 +1,91 @@
+---
+title: "Payment Manager Setup"
+description: "Configure payment system for the Lit JS SDK"
+---
+
+<Warning>
+  ❗️ Currently free on the dev network, so no need to deposit funds. More details coming soon for test and
+  production networks.
+</Warning>
+
+## Overview
+
+The Payment Manager demonstrates Lit Protocol's payment system - a billing system for decentralised cryptographic services. Users pay for compute resources on the Lit network to access core services like:
+
+- Encryption/Decryption - Secure data with programmable access control
+- PKP Signing - Cryptographic keys that can sign transactions based on conditions
+- Lit Actions - Serverless functions with cryptographic capabilities
+
+Similar to how you pay AWS for cloud computing, this system ensures the decentralised network can sustain itself and pay node operators. You can deposit funds, request withdrawals with security delays, and manage balances for yourself or other users (enabling applications to sponsor their users' costs for better UX).
+
+<Steps>
+  <Step title="Payment Manager Setup">
+```typescript
+import { createLitClient } from '@lit-protocol/lit-client';
+import { nagaDev } from '@lit-protocol/networks';
+
+// 1. Create lit client
+const litClient = await createLitClient({ network: nagaDev });
+
+// 2. Get PaymentManager instance (requires account for transactions)
+const paymentManager = await litClient.getPaymentManager({ 
+  account: yourAccount // viem account instance
+});
+
+```
+
+  </Step>
+
+  <Step title="Create an account">
+<CodeGroup>
+
+```typescript wagmi
+// 1. import the useWalletClient function from wagmi
+import { useWalletClient } from 'wagmi';
+
+// 2. Use your connected wallet as the account
+const { data: myAccount } = useWalletClient();
+```
+
+```typescript viem/accounts
+// 1. import the privateKeyToAccount function from viem/accounts
+import { privateKeyToAccount } from 'viem/accounts';
+
+// 2. Convert your private key to a viem account object that can be used for payment operations.
+const myAccount = privateKeyToAccount(
+  process.env.PRIVATE_KEY as `0x${string}`
+);
+```
+
+</CodeGroup>
+  </Step>
+
+  <Step title="Deposit funds">
+
+   <CodeGroup>
+  ```typescript Deposit Funds to your own account
+    // 1. Deposit funds to your own account
+    const result = await paymentManager.deposit({ 
+      amountInEth: "0.1" 
+    });
+
+    console.log(`Deposit successful: ${result.hash}`);
+    // Returns: { hash: string, receipt: object }
+    ```
+
+  ```typescript Deposit for Another User
+    // 1. Deposit funds to your own account
+    const result = await paymentManager.depositForUser({ 
+      userAddress: "0x742d35Cc6638Cb49f4E7c9ce71E02ef18C53E1d5",
+      amountInEth: "0.05"
+    });
+
+    console.log(`Deposit successful: ${result.hash}`);
+    // Returns: { hash: string, receipt: object }
+    ```
+   </CodeGroup>
+  </Step>
+
+</Steps>
+
+See SDK Reference for more details on the Payment Manager. [Payment Manager Reference](/sdk-reference/payment-manager)

@@ -1,0 +1,703 @@
+---
+title: 'EOA Authentication'
+description: 'Implement Externally Owned Account authentication with the Lit JS SDK'
+---
+
+# EOA Authentication
+
+Implement Externally Owned Account (EOA) authentication to enable users to sign in with their existing Ethereum wallets like MetaMask, WalletConnect, or Coinbase Wallet.
+
+## Overview
+
+EOA authentication allows users to authenticate using their existing Ethereum wallet addresses. This is the most straightforward authentication method as it leverages wallets users already have, requiring minimal setup while providing strong cryptographic security.
+
+## Supported Wallets
+
+The Lit JS SDK supports all major Ethereum wallets:
+
+- **MetaMask** - Browser extension and mobile wallet
+- **WalletConnect** - Protocol for connecting mobile wallets
+- **Coinbase Wallet** - Coinbase's self-custody wallet
+- **Rainbow** - Mobile-first Ethereum wallet
+- **Trust Wallet** - Multi-chain mobile wallet
+- **Any EIP-1193 compatible wallet**
+
+## Basic Setup
+
+```typescript
+import { NagaAuthManager, EOAAuthProvider } from '@naga/sdk';
+import { ethers } from 'ethers';
+
+// Setup EOA authentication
+const authManager = new NagaAuthManager({
+  storage: {
+    type: 'localStorage',
+    options: { keyPrefix: 'naga_eoa_' }
+  },
+  litClient: {
+    network: 'habanero'
+  },
+  authMethods: {
+    eoa: {
+      enabled: true,
+      supportedWallets: ['metamask', 'walletconnect', 'coinbase'],
+      autoConnect: true
+    }
+  }
+});
+
+await authManager.initialize();
+```
+
+## Authentication Flow
+
+### 1. Wallet Connection
+
+```typescript
+import { EOAAuthProvider } from '@naga/sdk';
+
+class EOAAuth {
+  private provider: EOAAuthProvider;
+
+  constructor() {
+    this.provider = new EOAAuthProvider({
+      supportedWallets: ['metamask', 'walletconnect', 'coinbase'],
+      chainId: 1, // Ethereum mainnet
+      requiredChains: [1, 137], // Ethereum and Polygon
+    });
+  }
+
+  async connectWallet(walletType?: 'metamask' | 'walletconnect' | 'coinbase'): Promise<string> {
+    try {
+      // Auto-detect wallet if not specified
+      const address = await this.provider.connect(walletType);
+      console.log('Connected wallet:', address);
+      return address;
+    } catch (error) {
+      console.error('Wallet connection failed:', error);
+      throw error;
+    }
+  }
+
+  async getConnectedAddress(): Promise<string | null> {
+    return await this.provider.getAddress();
+  }
+
+  async disconnect(): Promise<void> {
+    await this.provider.disconnect();
+  }
+}
+```
+
+### 2. Signing and Authentication
+
+```typescript
+import { LitNodeClient } from '@lit-protocol/lit-node-client';
+import { generateAuthSig, createSiweMessageWithRecaps } from '@lit-protocol/auth-helpers';
+
+class EOAAuthManager {
+  private litNodeClient: LitNodeClient;
+  private provider: any; // Ethereum provider (MetaMask, etc.)
+  private signer: ethers.Signer;
+
+  constructor(litNodeClient: LitNodeClient) {
+    this.litNodeClient = litNodeClient;
+  }
+
+  async authenticate(walletAddress: string): Promise<any> {
+    // Get the latest blockhash for nonce
+    const latestBlockhash = await this.litNodeClient.getLatestBlockhash();
+
+    // Create SIWE message
+    const toSign = await createSiweMessageWithRecaps({
+      uri: window.location.origin,
+      expiration: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(), // 24 hours
+      walletAddress: walletAddress,
+      nonce: latestBlockhash,
+      litNodeClient: this.litNodeClient,
+      resources: [
+        {
+          resource: new LitAccessControlConditionResource('*'),
+          ability: LIT_ABILITY.AccessControlConditionDecryption
+        }
+      ]
+    });
+
+    // Generate authentication signature
+    const authSig = await generateAuthSig({
+      signer: this.signer,
+      toSign
+    });
+
+    return authSig;
+  }
+
+  async getSessionSignatures(authSig: any): Promise<any> {
+    return await this.litNodeClient.getSessionSigs({
+      chain: 'ethereum',
+      resourceAbilityRequests: [
+        {
+          resource: new LitAccessControlConditionResource('*'),
+          ability: LIT_ABILITY.AccessControlConditionDecryption
+        }
+      ],
+      authNeededCallback: async () => authSig
+    });
+  }
+}
+```
+
+## Wallet Detection and Connection
+
+### Auto-Detection
+
+```typescript
+class WalletDetector {
+  static detectAvailableWallets(): string[] {
+    const wallets: string[] = [];
+
+    // Check for MetaMask
+    if (typeof window !== 'undefined' && window.ethereum?.isMetaMask) {
+      wallets.push('metamask');
+    }
+
+    // Check for Coinbase Wallet
+    if (typeof window !== 'undefined' && window.ethereum?.isCoinbaseWallet) {
+      wallets.push('coinbase');
+    }
+
+    // Check for WalletConnect
+    if (typeof window !== 'undefined' && window.ethereum?.isWalletConnect) {
+      wallets.push('walletconnect');
+    }
+
+    return wallets;
+  }
+
+  static async promptWalletSelection(availableWallets: string[]): Promise<string> {
+    if (availableWallets.length === 1) {
+      return availableWallets[0];
+    }
+
+    // Show wallet selection UI
+    return new Promise((resolve) => {
+      // Implementation depends on your UI framework
+      const walletModal = new WalletSelectionModal({
+        wallets: availableWallets,
+        onSelect: (wallet: string) => {
+          resolve(wallet);
+        }
+      });
+      walletModal.show();
+    });
+  }
+}
+```
+
+### MetaMask Integration
+
+```typescript
+class MetaMaskProvider implements WalletProvider {
+  private ethereum: any;
+
+  constructor() {
+    if (typeof window !== 'undefined' && window.ethereum) {
+      this.ethereum = window.ethereum;
+    } else {
+      throw new Error('MetaMask not detected');
+    }
+  }
+
+  async connect(): Promise<string> {
+    try {
+      // Request account access
+      const accounts = await this.ethereum.request({
+        method: 'eth_requestAccounts'
+      });
+
+      if (accounts.length === 0) {
+        throw new Error('No accounts found');
+      }
+
+      // Switch to required network if needed
+      await this.switchToRequiredNetwork();
+
+      return accounts[0];
+    } catch (error) {
+      if (error.code === 4001) {
+        throw new Error('User rejected connection request');
+      }
+      throw error;
+    }
+  }
+
+  async switchToRequiredNetwork(chainId: number = 1): Promise<void> {
+    try {
+      await this.ethereum.request({
+        method: 'wallet_switchEthereumChain',
+        params: [{ chainId: `0x${chainId.toString(16)}` }]
+      });
+    } catch (error) {
+      if (error.code === 4902) {
+        // Network not added to wallet
+        await this.addNetwork(chainId);
+      } else {
+        throw error;
+      }
+    }
+  }
+
+  private async addNetwork(chainId: number): Promise<void> {
+    const networkConfig = this.getNetworkConfig(chainId);
+    
+    await this.ethereum.request({
+      method: 'wallet_addEthereumChain',
+      params: [networkConfig]
+    });
+  }
+
+  private getNetworkConfig(chainId: number): any {
+    const configs = {
+      1: {
+        chainId: '0x1',
+        chainName: 'Ethereum Mainnet',
+        rpcUrls: ['https://mainnet.infura.io/v3/YOUR_PROJECT_ID'],
+        nativeCurrency: {
+          name: 'Ether',
+          symbol: 'ETH',
+          decimals: 18
+        },
+        blockExplorerUrls: ['https://etherscan.io/']
+      },
+      137: {
+        chainId: '0x89',
+        chainName: 'Polygon Mainnet',
+        rpcUrls: ['https://polygon-rpc.com/'],
+        nativeCurrency: {
+          name: 'MATIC',
+          symbol: 'MATIC',
+          decimals: 18
+        },
+        blockExplorerUrls: ['https://polygonscan.com/']
+      }
+    };
+
+    return configs[chainId];
+  }
+
+  async getSigner(): Promise<ethers.Signer> {
+    const provider = new ethers.providers.Web3Provider(this.ethereum);
+    return provider.getSigner();
+  }
+}
+```
+
+### WalletConnect Integration
+
+```typescript
+import { WalletConnectConnector } from '@web3-react/walletconnect-connector';
+
+class WalletConnectProvider implements WalletProvider {
+  private connector: WalletConnectConnector;
+
+  constructor() {
+    this.connector = new WalletConnectConnector({
+      rpc: {
+        1: 'https://mainnet.infura.io/v3/YOUR_PROJECT_ID',
+        137: 'https://polygon-rpc.com/'
+      },
+      bridge: 'https://bridge.walletconnect.org',
+      qrcode: true,
+      pollingInterval: 12000
+    });
+  }
+
+  async connect(): Promise<string> {
+    try {
+      await this.connector.activate();
+      const account = await this.connector.getAccount();
+      
+      if (!account) {
+        throw new Error('No account connected');
+      }
+
+      return account;
+    } catch (error) {
+      console.error('WalletConnect connection failed:', error);
+      throw error;
+    }
+  }
+
+  async disconnect(): Promise<void> {
+    if (this.connector) {
+      await this.connector.deactivate();
+    }
+  }
+
+  async getSigner(): Promise<ethers.Signer> {
+    const provider = await this.connector.getProvider();
+    const ethersProvider = new ethers.providers.Web3Provider(provider);
+    return ethersProvider.getSigner();
+  }
+}
+```
+
+## Chain Management
+
+### Multi-Chain Support
+
+```typescript
+class ChainManager {
+  private supportedChains = [
+    { id: 1, name: 'Ethereum', rpc: 'https://mainnet.infura.io/v3/YOUR_PROJECT_ID' },
+    { id: 137, name: 'Polygon', rpc: 'https://polygon-rpc.com/' },
+    { id: 42161, name: 'Arbitrum', rpc: 'https://arb1.arbitrum.io/rpc' }
+  ];
+
+  async getCurrentChain(provider: any): Promise<number> {
+    const chainId = await provider.request({ method: 'eth_chainId' });
+    return parseInt(chainId, 16);
+  }
+
+  async switchChain(provider: any, targetChainId: number): Promise<void> {
+    const currentChain = await this.getCurrentChain(provider);
+    
+    if (currentChain === targetChainId) {
+      return; // Already on target chain
+    }
+
+    try {
+      await provider.request({
+        method: 'wallet_switchEthereumChain',
+        params: [{ chainId: `0x${targetChainId.toString(16)}` }]
+      });
+    } catch (error) {
+      if (error.code === 4902) {
+        // Chain not added, add it
+        const chainConfig = this.supportedChains.find(chain => chain.id === targetChainId);
+        if (chainConfig) {
+          await this.addChain(provider, chainConfig);
+        }
+      } else {
+        throw error;
+      }
+    }
+  }
+
+  private async addChain(provider: any, chainConfig: any): Promise<void> {
+    await provider.request({
+      method: 'wallet_addEthereumChain',
+      params: [{
+        chainId: `0x${chainConfig.id.toString(16)}`,
+        chainName: chainConfig.name,
+        rpcUrls: [chainConfig.rpc],
+        nativeCurrency: {
+          name: 'ETH',
+          symbol: 'ETH',
+          decimals: 18
+        }
+      }]
+    });
+  }
+}
+```
+
+## Error Handling
+
+### Common Error Scenarios
+
+```typescript
+enum EOAAuthError {
+  WALLET_NOT_FOUND = 'WALLET_NOT_FOUND',
+  USER_REJECTED = 'USER_REJECTED',
+  NETWORK_MISMATCH = 'NETWORK_MISMATCH',
+  INSUFFICIENT_BALANCE = 'INSUFFICIENT_BALANCE',
+  SIGNATURE_FAILED = 'SIGNATURE_FAILED'
+}
+
+class EOAAuthErrorHandler {
+  static handleError(error: any): string {
+    if (error.code === 4001) {
+      return 'User rejected the connection request. Please try again.';
+    }
+    
+    if (error.code === 4902) {
+      return 'Required network not found. Please add the network to your wallet.';
+    }
+
+    if (error.message?.includes('insufficient funds')) {
+      return 'Insufficient balance for transaction fees.';
+    }
+
+    if (error.message?.includes('MetaMask')) {
+      return 'MetaMask error. Please check your wallet connection.';
+    }
+
+    return 'Authentication failed. Please check your wallet and try again.';
+  }
+
+  static async retryWithDelay(fn: () => Promise<any>, maxRetries: number = 3): Promise<any> {
+    for (let attempt = 1; attempt <= maxRetries; attempt++) {
+      try {
+        return await fn();
+      } catch (error) {
+        if (attempt === maxRetries) {
+          throw error;
+        }
+        
+        // Exponential backoff
+        const delay = Math.pow(2, attempt) * 1000;
+        await new Promise(resolve => setTimeout(resolve, delay));
+      }
+    }
+  }
+}
+```
+
+## Security Considerations
+
+### Message Signing Security
+
+```typescript
+class SecureEOAAuth {
+  private static readonly MESSAGE_PREFIX = 'Naga SDK Authentication';
+  private static readonly MAX_MESSAGE_AGE = 5 * 60 * 1000; // 5 minutes
+
+  static generateSecureMessage(address: string, timestamp: number): string {
+    const nonce = Math.random().toString(36).substring(2, 15);
+    
+    return `${this.MESSAGE_PREFIX}
+Address: ${address}
+Timestamp: ${timestamp}
+Nonce: ${nonce}
+I authorize this application to access my Lit Protocol resources.`;
+  }
+
+  static validateMessage(message: string, maxAge: number = this.MAX_MESSAGE_AGE): boolean {
+    const timestampMatch = message.match(/Timestamp: (\d+)/);
+    
+    if (!timestampMatch) {
+      return false;
+    }
+
+    const timestamp = parseInt(timestampMatch[1]);
+    const age = Date.now() - timestamp;
+
+    return age <= maxAge;
+  }
+
+  static async secureSign(signer: ethers.Signer, address: string): Promise<string> {
+    const timestamp = Date.now();
+    const message = this.generateSecureMessage(address, timestamp);
+    
+    try {
+      const signature = await signer.signMessage(message);
+      return signature;
+    } catch (error) {
+      throw new Error('Message signing failed');
+    }
+  }
+}
+```
+
+### Address Validation
+
+```typescript
+class AddressValidator {
+  static isValidEthereumAddress(address: string): boolean {
+    return ethers.utils.isAddress(address);
+  }
+
+  static checksumAddress(address: string): string {
+    return ethers.utils.getAddress(address);
+  }
+
+  static async validateAddressOwnership(
+    address: string, 
+    signer: ethers.Signer
+  ): Promise<boolean> {
+    try {
+      const signerAddress = await signer.getAddress();
+      return this.checksumAddress(address) === this.checksumAddress(signerAddress);
+    } catch {
+      return false;
+    }
+  }
+}
+```
+
+## Integration Examples
+
+### React Hook for EOA Auth
+
+```typescript
+import { useState, useEffect, useCallback } from 'react';
+
+export function useEOAAuth() {
+  const [isConnected, setIsConnected] = useState(false);
+  const [address, setAddress] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const connect = useCallback(async (walletType?: string) => {
+    setLoading(true);
+    setError(null);
+
+    try {
+      const eoaAuth = new EOAAuth();
+      const connectedAddress = await eoaAuth.connectWallet(walletType);
+      
+      setAddress(connectedAddress);
+      setIsConnected(true);
+    } catch (err) {
+      setError(EOAAuthErrorHandler.handleError(err));
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  const disconnect = useCallback(async () => {
+    try {
+      const eoaAuth = new EOAAuth();
+      await eoaAuth.disconnect();
+      
+      setAddress(null);
+      setIsConnected(false);
+    } catch (err) {
+      setError(EOAAuthErrorHandler.handleError(err));
+    }
+  }, []);
+
+  // Check for existing connection on mount
+  useEffect(() => {
+    const checkConnection = async () => {
+      try {
+        const eoaAuth = new EOAAuth();
+        const connectedAddress = await eoaAuth.getConnectedAddress();
+        
+        if (connectedAddress) {
+          setAddress(connectedAddress);
+          setIsConnected(true);
+        }
+      } catch {
+        // No existing connection
+      }
+    };
+
+    checkConnection();
+  }, []);
+
+  return {
+    isConnected,
+    address,
+    loading,
+    error,
+    connect,
+    disconnect
+  };
+}
+```
+
+### Vue.js Composition API
+
+```typescript
+import { ref, onMounted } from 'vue';
+
+export function useEOAAuth() {
+  const isConnected = ref(false);
+  const address = ref<string | null>(null);
+  const loading = ref(false);
+  const error = ref<string | null>(null);
+
+  const connect = async (walletType?: string) => {
+    loading.value = true;
+    error.value = null;
+
+    try {
+      const eoaAuth = new EOAAuth();
+      const connectedAddress = await eoaAuth.connectWallet(walletType);
+      
+      address.value = connectedAddress;
+      isConnected.value = true;
+    } catch (err) {
+      error.value = EOAAuthErrorHandler.handleError(err);
+    } finally {
+      loading.value = false;
+    }
+  };
+
+  const disconnect = async () => {
+    try {
+      const eoaAuth = new EOAAuth();
+      await eoaAuth.disconnect();
+      
+      address.value = null;
+      isConnected.value = false;
+    } catch (err) {
+      error.value = EOAAuthErrorHandler.handleError(err);
+    }
+  };
+
+  onMounted(async () => {
+    try {
+      const eoaAuth = new EOAAuth();
+      const connectedAddress = await eoaAuth.getConnectedAddress();
+      
+      if (connectedAddress) {
+        address.value = connectedAddress;
+        isConnected.value = true;
+      }
+    } catch {
+      // No existing connection
+    }
+  });
+
+  return {
+    isConnected,
+    address,
+    loading,
+    error,
+    connect,
+    disconnect
+  };
+}
+```
+
+---
+
+## Reference
+
+### EOAAuthProvider Interface
+
+```typescript
+interface EOAAuthProvider {
+  connect(walletType?: string): Promise<string>;
+  disconnect(): Promise<void>;
+  getAddress(): Promise<string | null>;
+  getSigner(): Promise<ethers.Signer>;
+  switchNetwork(chainId: number): Promise<void>;
+}
+```
+
+### WalletProvider Interface
+
+```typescript
+interface WalletProvider {
+  connect(): Promise<string>;
+  disconnect(): Promise<void>;
+  getSigner(): Promise<ethers.Signer>;
+  getChainId(): Promise<number>;
+}
+```
+
+### Configuration Options
+
+```typescript
+interface EOAAuthConfig {
+  supportedWallets: string[];
+  chainId?: number;
+  requiredChains?: number[];
+  autoConnect?: boolean;
+  networkSwitchRequired?: boolean;
+}
+``` 

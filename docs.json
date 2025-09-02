@@ -59,7 +59,6 @@
           {
             "group": "Authentication",
             "pages": [
-              "sdk/auth/eoa/eoa-auth",
               {
                 "group": "PKP Native Auth",
                 "pages": [
@@ -73,7 +72,8 @@
                   "sdk/auth/pkp-native-auth/pkp-stytch-2fa-totp-auth"
                 ]
               },
-              "sdk/auth/pkp-custom-auth/pkp-custom-auth"
+              "sdk/auth/pkp-custom-auth/pkp-custom-auth",
+              "sdk/auth/eoa/eoa-auth"
             ]
           },
           {

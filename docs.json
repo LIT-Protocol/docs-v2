@@ -85,6 +85,13 @@
             ]
           },
           {
+            "group": "PKP Wallet Management",
+            "pages":[
+              "sdk/sdk-reference/lit-client/functions/createLitClient/pkp-permissions",
+              "sdk/sdk-reference/lit-client/functions/createLitClient/pkp-viem-account"
+            ]
+          },
+          {
             "group": "Reference",
             "pages": [
               {
@@ -94,6 +101,10 @@
               {
                 "group": "@lit-protocol/auth@beta",
                 "pages": ["sdk/sdk-reference/auth/functions/createAuthManager"]
+              },
+              {
+                "group": "@lit-protocol/access-control-conditions@beta",
+                "pages": ["sdk/sdk-reference/access-control-conditions/functions/createAccBuilder"]
               }
             ]
           }

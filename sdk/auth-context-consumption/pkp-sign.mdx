@@ -1,7 +1,12 @@
 ---
-title: 'PKP Sign'
-description: 'Use your PKP to sign a message with the selected chain and scheme. The signing operation will automatically find the most optimised price, or you can specify a custom maximum price using the userMaxPrice parameter.'
+title: "PKP Sign"
+description: "Use your PKP to sign a message with the selected chain and scheme. The signing operation will automatically find the most optimised price, or you can specify a custom maximum price using the userMaxPrice parameter."
 ---
+
+<Tip>
+  See SDK Reference for more details on the PKP Sign. [PKP Sign
+  Reference](/sdk/sdk-reference/lit-client/functions/createLitClient#chain-raw-pkpsign)
+</Tip>
 
 ```ts
 // The message string will be UTF-8 encoded before signing.
@@ -10,10 +15,10 @@ description: 'Use your PKP to sign a message with the selected chain and scheme.
 const messageBytes = new TextEncoder().encode(messageToSign);
 
 const signatures = await litClient.chain.raw.pkpSign({
-  chain: 'ethereum',         
-  signingScheme: 'EcdsaK256Sha256', 
+  chain: "ethereum",
+  signingScheme: "EcdsaK256Sha256",
   pubKey: pkpInfo.pubkey,
   authContext: authContext,
-  toSign: messageBytes,          // UTF-8 encoded message
+  toSign: messageBytes, // UTF-8 encoded message
 });
 ```

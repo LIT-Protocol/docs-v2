@@ -4,7 +4,7 @@ title: createLitClient
 
 # Functions
 
-> **createLitClient**(`network`)
+> **createLitClient**(`{ network }`)
 
 ## Parameters
 
@@ -487,7 +487,7 @@ Mint a PKP using custom authentication (Lit Action validator or IPFS CID).
 
 ### authService.mintWithAuth
 
-Mint a PKP via the Auth Service (server-side flow). Parameters and returns mirror mintWithAuth.
+Mint a PKP via the Auth Service. Parameters and returns mirror `mintWithAuth`.
 
 #### Parameters
 
@@ -1063,3 +1063,12 @@ none
     </ResponseField>
   </Expandable>
 </ResponseField>
+
+### disconnect
+Stop background state updates and release resources.
+
+#### Parameters
+none
+
+#### Returns
+void

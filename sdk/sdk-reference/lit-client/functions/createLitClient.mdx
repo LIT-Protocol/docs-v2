@@ -496,6 +496,9 @@ Mint a PKP via the Auth Service. Parameters and returns mirror `mintWithAuth`.
     <ResponseField name="account" type="Account | WalletClient | Signer" />
     <ResponseField name="authData" type="AuthData" />
     <ResponseField name="scopes" type="string[] | number[]" />
+    <ResponseField name="authServiceBaseUrl" type="string">
+      Optional. Override the Auth Service base URL; defaults to the network’s configured value.
+    </ResponseField>
   </Expandable>
 </ResponseField>
 

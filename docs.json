@@ -104,6 +104,12 @@
               {
                 "group": "@lit-protocol/auth@beta",
                 "pages": ["sdk/sdk-reference/auth/functions/createAuthManager"]
+              },
+              {
+                "group": "@lit-protocol/networks@beta",
+                "pages": [
+                  "sdk/sdk-reference/networks/functions/withOverrides"
+                ]
               }
             ]
           },

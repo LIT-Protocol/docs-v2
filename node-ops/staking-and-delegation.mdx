@@ -14,7 +14,7 @@ This page explains how staking and delegation works, including how to stake as a
 - Rewards are configured per network and may differ between [Realms](https://spark.litprotocol.com/enhancing-threshold-security-and-performance-at-scale-introducing-shadow-splicing/).
 - Only active node operators—those selected to run a node—receive rewards. Standby operators do not earn rewards at this time.
 
-**Minimum Self-Stake Requirements**: All node operators must stake a minimum of $20,000 worth of LITKEY tokens as self-stake to be eligible. This minimum ensures each operator has skin in the game and meets the alignment criteria outlined in the [Requirements and Expectations](/node-ops/requirements) section.
+**Minimum Self-Stake Requirements**: All node operators must stake a minimum of \$20,000 worth of \$LITKEY tokens as self-stake to be eligible. This minimum ensures each operator has skin in the game and meets the alignment criteria outlined in the [Requirements and Expectations](/node-ops/requirements) section.
 
 ## Calculating Staking Rewards
 
@@ -23,7 +23,7 @@ The Lit Protocol employs a dual reward structure to compensate node operators:
 1. **Cost-Based Component**
 A baseline reward is allocated to each node operator to offset the expenses associated with the required hardware and infrastructure. The baseline reward amount may be adjusted periodically via governance to cover the real-world costs associated with node operations (e.g., server hosting) in their entirety, ensuring operators always break even on the costs associated with running a node and never operate at a net loss. The goal is to preserve a stable pool of node operators even during periods of market volatility, essential for maintaining the shared cryptographic secrets maintained by the network in perpetuity. 
 
-Several configurable parameters go into setting the cost-based component of the Lit node rewards budget, including the price of the $LITKEY token, the costs associated with running a node (denominated in USD), and a target profit margin factor. 
+Several configurable parameters go into setting the cost-based component of the Lit node rewards budget, including the price of the \$LITKEY token, the costs associated with running a node (denominated in USD), and a target profit margin factor. 
 
 2. **Stake-Weight Component**
 Beyond the cost-based component, a staker’s total earnings will be distributed according to their relative stake-weight. This stake-weight component is calculated as a function of both the quantity of $LITKEY tokens staked as well as the length of time for which they are locked. This timelock can range from two weeks to two years, depending on the preferences of each individual staker. Longer lock durations yield higher multipliers on rewards, signaling greater commitment and aligning incentives toward long-term network sustainability. The relative nature of this weighting means that overall rewards depend not only on an individual’s stake but also on the staking decisions of other participants.
@@ -32,8 +32,8 @@ For an in-depth look at the formula used to calculate stake weight and total rew
 
 ## Delegation
 
-After meeting the minimum self-stake requirement, any node operator can increase their total stake weight via delegation from LITKEY token holders. 
-- Any LITKEY holder can delegate to any node operator given they have registered their node on the staking portal.
+After meeting the minimum self-stake requirement, any node operator can increase their total stake weight via delegation from \$LITKEY token holders. 
+- Any \$LITKEY holder can delegate to any node operator given they have registered their node on the staking portal.
 - Delegated stake allows node operators to boost their rank during the staking contest, increasing the chance of being selected for the genesis validator set.
 - Delegators retain ownership of their tokens while sharing in the staking rewards distributed to each node.
 
@@ -49,7 +49,7 @@ Slashing has been implemented to ensure that node operators keep their machines 
 
 Unresponsiveness: If a node operator is detected as unresponsive by its peers, it will be kicked from the active node operator set. To safeguard the network’s security, an immediate epoch transition is triggered, recalculating the threshold to two-thirds of the remaining active nodes. The kicked node will automatically attempt to rejoin the network in the next epoch, which occurs every hour, providing a built-in opportunity to recover from temporary issues.
 
-To prevent persistently faulty nodes from repeatedly disrupting the network, each node has a kick counter that increments each time they’re kicked. A node can be kicked up to 5 times before it is banned from the network. Upon exceeding this limit, the node is banned, and its locked stake is slashed by 5%. Additionally, if a node goes offline and doesn’t rejoin within a 24hr period, they are also banned and slashed. Once banned, the node operator must address the underlying issues causing unresponsiveness. The Lit Advisory Council will then manually review the node’s status and unban it only after confirming that it is stable and operational, ensuring that only reliable nodes are readmitted to the active set.
+To prevent persistently faulty nodes from repeatedly disrupting the network, each node has a kick counter that increments each time they’re kicked. A node can be kicked up to 5 times before it is banned from the network. Upon exceeding this limit, the node is banned, and its locked stake is slashed by 5%. Additionally, if a node goes offline and doesn’t rejoin within a 24hr period, they are also banned and slashed. Once banned, the node operator must address the underlying issues causing unresponsiveness. The Lit Protocol Council will then manually review the node’s status and unban it only after confirming that it is stable and operational, ensuring that only reliable nodes are readmitted to the active set.
 
 To permit occasional and minor unresponsiveness without severely penalizing operators, a ‘decay’ mechanism has been implemented. The decay mechanism resets the kick counter at the end of each week, meaning a node can be kicked up to 5 times per decay period (1 week) before being slashed. This serves to strike a balance between enforcing network liveness and giving node operators fair opportunities to rectify temporary issues while protecting the network from chronic instability.
 

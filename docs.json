@@ -120,6 +120,46 @@
             ]
           }
         ]
+      },
+      {
+        "tab": "Governance",
+        "pages": [
+          "governance/overview",
+          "governance/governance-architecture",
+          "governance/lit-improvement-proposals",
+          {
+            "group": "$LITKEY Token",
+            "pages": [
+              "governance/litkey/overview",
+              "governance/litkey/initial-allocation-and-distribution"
+            ]
+          },
+          {
+            "group": "Lit Protocol Airdrop: Season 1",
+            "pages": [
+              "governance/airdrop/overview",
+              "governance/airdrop/eligibility-criteria",
+              "governance/airdrop/claiming",
+              "governance/airdrop/rewards"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Node Operations",
+        "pages": [
+          "node-ops/overview",
+          "node-ops/requirements",
+          "node-ops/staking-and-delegation",
+          {
+            "group": "Lit Protocol v1: Node Operator Selection",
+            "pages": [
+              "node-ops/staking-contest/logistics",
+              "node-ops/staking-contest/registration",
+              "node-ops/staking-contest/acquire-stake"
+            ]
+          }
+        ]
       }
     ]
   },

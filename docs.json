@@ -13,7 +13,7 @@
       {
         "tab": "Learning Lit",
         "pages": [
-          "index", 
+          "index",
           "learning-lit/how-it-works",
           {
             "group": "Security",
@@ -43,7 +43,7 @@
                 "group": "Prerequisites",
                 "pages": [
                   "sdk/getting-started/prerequisites/faucet",
-                  "sdk/getting-started/prerequisites/chain-config" 
+                  "sdk/getting-started/prerequisites/chain-config"
                 ]
               },
               "sdk/getting-started/lit-client",
@@ -82,7 +82,7 @@
           },
           {
             "group": "PKP Wallet Management",
-            "pages":[
+            "pages": [
               "sdk/sdk-reference/lit-client/functions/createLitClient/pkp-viem-account",
               "sdk/sdk-reference/lit-client/functions/createLitClient/pkp-permissions",
               "sdk/sdk-reference/lit-client/functions/createLitClient/pkp-view-helpers"
@@ -98,26 +98,24 @@
             "group": "Reference",
             "pages": [
               {
-                "group": "@lit-protocol/lit-client@beta",
-                "pages": ["sdk/sdk-reference/lit-client/functions/createLitClient"]
+                "group": "@lit-protocol/lit-client",
+                "pages": [
+                  "sdk/sdk-reference/lit-client/functions/createLitClient"
+                ]
               },
               {
-                "group": "@lit-protocol/auth@beta",
+                "group": "@lit-protocol/auth",
                 "pages": ["sdk/sdk-reference/auth/functions/createAuthManager"]
               },
               {
-                "group": "@lit-protocol/networks@beta",
-                "pages": [
-                  "sdk/sdk-reference/networks/functions/withOverrides"
-                ]
+                "group": "@lit-protocol/networks",
+                "pages": ["sdk/sdk-reference/networks/functions/withOverrides"]
               }
             ]
           },
           {
             "group": "Resources",
-            "pages": [
-              "sdk/resources/supported-evm-chains"
-            ]
+            "pages": ["sdk/resources/supported-evm-chains"]
           }
         ]
       }

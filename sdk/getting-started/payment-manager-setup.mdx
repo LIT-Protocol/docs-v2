@@ -4,8 +4,8 @@ description: "Configure payment system for the Lit JS SDK"
 ---
 
 <Warning>
-  ❗️ Currently free on the dev network, so no need to deposit funds. More details coming soon for test and
-  production networks.
+  ❗️ Currently free on the dev network, so no need to deposit funds. More
+  details coming soon for test and production networks.
 </Warning>
 
 <Note>
@@ -15,7 +15,8 @@ description: "Configure payment system for the Lit JS SDK"
 </Note>
 
 <Tip>
-See SDK Reference for more details on the Payment Manager. [Payment Manager Reference](/sdk/sdk-reference/lit-client/functions/createLitClient#getpaymentmanager)
+  See SDK Reference for more details on the Payment Manager. [Payment Manager
+  Reference](/sdk/sdk-reference/lit-client/functions/createLitClient#getpaymentmanager)
 </Tip>
 
 ## Overview
@@ -30,7 +31,8 @@ Similar to how you pay AWS for cloud computing, this\system ensures the decentra
 
 <Steps>
   <Step title="Payment Manager Setup">
-```typescriptÇ
+  
+```typescript
 import { createLitClient } from '@lit-protocol/lit-client';
 import { nagaTest } from '@lit-protocol/networks';
 
@@ -38,11 +40,10 @@ import { nagaTest } from '@lit-protocol/networks';
 const litClient = await createLitClient({ network: nagaTest });
 
 // 2. Get PaymentManager instance (requires account for transactions)
-const paymentManager = await litClient.getPaymentManager({ 
-  account: yourAccount // viem account instance
+const paymentManager = await litClient.getPaymentManager({
+account: yourAccount // viem account instance
 });
-
-```
+````
 
   </Step>
 
@@ -55,16 +56,14 @@ import { useWalletClient } from 'wagmi';
 
 // 2. Use your connected wallet as the account
 const { data: myAccount } = useWalletClient();
-```
+````
 
 ```typescript viem/accounts
 // 1. import the privateKeyToAccount function from viem/accounts
-import { privateKeyToAccount } from 'viem/accounts';
+import { privateKeyToAccount } from "viem/accounts";
 
 // 2. Convert your private key to a viem account object that can be used for payment operations.
-const myAccount = privateKeyToAccount(
-  process.env.PRIVATE_KEY as `0x${string}`
-);
+const myAccount = privateKeyToAccount(process.env.PRIVATE_KEY as `0x${string}`);
 ```
 
 </CodeGroup>
@@ -83,18 +82,18 @@ const myAccount = privateKeyToAccount(
     // Returns: { hash: string, receipt: object }
     ```
 
-  ```typescript Deposit for Another User
-    // 1. Deposit funds to your own account
-    const result = await paymentManager.depositForUser({ 
-      userAddress: "0x742d35Cc6638Cb49f4E7c9ce71E02ef18C53E1d5",
-      amountInEth: "0.05"
-    });
+````typescript Deposit for Another User
+  // 1. Deposit funds to your own account
+  const result = await paymentManager.depositForUser({
+    userAddress: "0x742d35Cc6638Cb49f4E7c9ce71E02ef18C53E1d5",
+    amountInEth: "0.05"
+  });
 
-    console.log(`Deposit successful: ${result.hash}`);
-    // Returns: { hash: string, receipt: object }
-    ```
-   </CodeGroup>
-  </Step>
+  console.log(`Deposit successful: ${result.hash}`);
+  // Returns: { hash: string, receipt: object }
+  ```
+ </CodeGroup>
+</Step>
 
 </Steps>
 
@@ -119,8 +118,8 @@ const apiKey = process.env.LIT_API_KEY!;
 
 // 3. Register a payer wallet (store the secret securely server-side)
 const registerResponse = await litClient.authService.registerPayer({
-  authServiceBaseUrl,
-  apiKey,
+authServiceBaseUrl,
+apiKey,
 });
 
 console.log('Payer wallet:', registerResponse.payerWalletAddress);
@@ -128,19 +127,19 @@ console.log('Payer secret (store securely!):', registerResponse.payerSecretKey);
 
 // 4. Later on, delegate payments for multiple users using the saved secret
 const delegateResponse = await litClient.authService.delegateUsers({
-  authServiceBaseUrl,
-  apiKey,
-  payerSecretKey: registerResponse.payerSecretKey,
-  userAddresses: [
-    '0x1234...abcd',
-    '0xabcd...1234',
-  ],
+authServiceBaseUrl,
+apiKey,
+payerSecretKey: registerResponse.payerSecretKey,
+userAddresses: [
+  '0x1234...abcd',
+  '0xabcd...1234',
+],
 });
 
 console.log('Delegation submitted with tx hash:', delegateResponse.txHash);
 
 // 5. Continue to use the same payer secret for future delegation calls
-```
+````
 
 ### How the Auth Service derives payer wallets
 

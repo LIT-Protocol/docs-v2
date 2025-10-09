@@ -70,30 +70,31 @@ const myAccount = privateKeyToAccount(process.env.PRIVATE_KEY as `0x${string}`);
   </Step>
 
   <Step title="Deposit funds">
+<CodeGroup>
 
-   <CodeGroup>
-  ```typescript Deposit Funds to your own account
-    // 1. Deposit funds to your own account
-    const result = await paymentManager.deposit({ 
-      amountInEth: "0.1" 
-    });
+```typescript Deposit funds to your own account
+// 1. Deposit funds to your own account
+const result = await paymentManager.deposit({
+  amountInEth: "0.1",
+});
 
-    console.log(`Deposit successful: ${result.hash}`);
-    // Returns: { hash: string, receipt: object }
-    ```
+console.log(`Deposit successful: ${result.hash}`);
+// Returns: { hash: string, receipt: object }
+```
 
-````typescript Deposit for Another User
-  // 1. Deposit funds to your own account
-  const result = await paymentManager.depositForUser({
-    userAddress: "0x742d35Cc6638Cb49f4E7c9ce71E02ef18C53E1d5",
-    amountInEth: "0.05"
-  });
+```typescript Deposit for another user
+// 1. Deposit funds for another user
+const result = await paymentManager.depositForUser({
+  userAddress: "0x742d35Cc6638Cb49f4E7c9ce71E02ef18C53E1d5",
+  amountInEth: "0.05",
+});
 
-  console.log(`Deposit successful: ${result.hash}`);
-  // Returns: { hash: string, receipt: object }
-  ```
- </CodeGroup>
-</Step>
+console.log(`Deposit successful: ${result.hash}`);
+// Returns: { hash: string, receipt: object }
+```
+
+</CodeGroup>
+  </Step>
 
 </Steps>
 

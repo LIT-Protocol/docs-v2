@@ -10,14 +10,28 @@ description: "Configure auth services for the Lit JS SDK"
 
 ## Overview
 
-Create your own authentication infrastructure using the Lit Protocol Auth Services package. This provides two core services:
+The Lit Protocol Auth Services package helps you run the infrastructure required to mint Programmable Key Pairs (PKPs) and power OAuth-based sign-in flows.
 
-1. Auth Server for PKP minting with various auth methods, and a Worker for background minting operations.
-2. Login Server for OAuth flows
+- `Auth Service`: Handles PKP minting for supported auth methods and exposes APIs consumed by the Lit JS SDK.
+- `Login Server`: Manages OAuth flows (Google, Discord, etc.) and issues short-lived session tokens that the Auth Service consumes.
 
-# Dev Network
+## Hosted Auth Services
 
-On the naga-dev network, you don't need to setup these services yourself, they are already set up for you.
+Lit hosts default Auth Service instances so you can build without deploying infrastructure on day one. Point your application to the URL that matches the network you're targeting:
+
+| Network   | Auth Service URL                                  | Login Server                     |
+| --------- | -------------------------------------------------- | -------------------------------- |
+| `naga-dev` | https://naga-dev-auth-service.getlit.dev           | https://login.litgateway.com     |
+| `naga-test` | https://naga-test-auth-service.getlit.dev         | Run your own (see below)         |
+| `naga` | Run your own (recommended)                           | Run your own (recommended)       |
+
+<Note>
+  The hosted services are best suited for prototyping. Self-host the Auth Service and Login Server for production traffic or when you need custom configuration.
+</Note>
+
+## Naga Dev Network
+
+On the `naga-dev` network, you can rely on Lit's hosted endpoints while you prototype. Configure your SDK or environment variables with the URLs below.
 
 ### Login Server
 
@@ -28,14 +42,25 @@ https://login.litgateway.com
 ### Auth Server
 
 ```bash
-https://naga-auth-service.onrender.com
+https://naga-dev-auth-service.getlit.dev
 ```
 
-# Test & Production Networks
+## Staging & Production Networks
+
+### `naga-test` (staging)
+
+For the `naga-test` staging network you can start building immediately with Lit's hosted Auth Service:
+
+```bash
+https://naga-test-auth-service.getlit.dev
+```
+
+### `naga` (production)
+
+Lit does not operate a public Auth Service or Login Server for the `naga` mainnet. Deploy both components within your infrastructure to control secrets, scale, and compliance requirements.
 
 <Warning>
-  The following guide is incomplete. More details coming soon for test and production networks on how to setup
-  these services yourself.
+  Plan to self-host both services for production (`naga`) workloads or whenever you need full control over configuration, rate limits, and secrets management.
 </Warning>
 
 ### Install the SDK
@@ -216,3 +241,7 @@ DISCORD_CLIENT_SECRET=your_discord_client_secret
 ```
   </Step>
 </Steps>
+
+<Note>
+  When you run a custom Login Server, the `DISCORD_CLIENT_ID` is embedded into the `authMethodId` that Lit nodes use to locate the correct PKP. Make sure the value matches the client ID you used when minting the Discord auth method.
+</Note>

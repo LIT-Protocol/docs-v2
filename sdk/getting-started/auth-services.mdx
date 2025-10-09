@@ -2,6 +2,7 @@
 title: "Auth Services Setup"
 description: "Configure auth services for the Lit JS SDK"
 ---
+
 <Note>
   💰 Need Test Tokens? Visit the [Chronicle Yellowstone
   Faucet](https://chronicle-yellowstone-faucet.getlit.dev/) to get test tokens
@@ -19,55 +20,36 @@ The Lit Protocol Auth Services package helps you run the infrastructure required
 
 Lit hosts default Auth Service instances so you can build without deploying infrastructure on day one. Point your application to the URL that matches the network you're targeting:
 
-| Network   | Auth Service URL                                  | Login Server                     |
-| --------- | -------------------------------------------------- | -------------------------------- |
-| `naga-dev` | https://naga-dev-auth-service.getlit.dev           | https://login.litgateway.com     |
-| `naga-test` | https://naga-test-auth-service.getlit.dev         | Run your own (see below)         |
-| `naga` | Run your own (recommended)                           | Run your own (recommended)       |
+| Network     | Auth Service URL                            | Login Server                   | Usage |
+| ----------- | ------------------------------------------- | ------------------------------ | ----- |
+| `naga-dev`  | `https://naga-dev-auth-service.getlit.dev`  | `https://login.litgateway.com` | Use Lit's hosted endpoints while you prototype. Configure your SDK or environment variables with the URLs in this table. |
+| `naga-test` | `https://naga-test-auth-service.getlit.dev` | `https://login.litgateway.com` | Start with the hosted endpoints for staging, then switch to your own infrastructure as you scale. |
+| `naga`      | `Run your own (recommended)`                | `Run your own (recommended)`   | Lit does not operate public Auth Service or Login Server endpoints for `naga` |
 
 <Note>
-  The hosted services are best suited for prototyping. Self-host the Auth Service and Login Server for production traffic or when you need custom configuration.
+  The hosted services are best suited for prototyping. Self-host the Auth
+  Service and Login Server for production traffic or when you need custom
+  configuration.
 </Note>
 
-## Naga Dev Network
-
-On the `naga-dev` network, you can rely on Lit's hosted endpoints while you prototype. Configure your SDK or environment variables with the URLs below.
-
-### Login Server
-
-```bash
-https://login.litgateway.com
-```
-
-### Auth Server
-
-```bash
-https://naga-dev-auth-service.getlit.dev
-```
-
-## Staging & Production Networks
-
-### `naga-test` (staging)
-
-For the `naga-test` staging network you can start building immediately with Lit's hosted Auth Service:
-
-```bash
-https://naga-test-auth-service.getlit.dev
-```
-
-### `naga` (production)
-
-Lit does not operate a public Auth Service or Login Server for the `naga` mainnet. Deploy both components within your infrastructure to control secrets, scale, and compliance requirements.
-
-<Warning>
-  Plan to self-host both services for production (`naga`) workloads or whenever you need full control over configuration, rate limits, and secrets management.
-</Warning>
 
 ### Install the SDK
 
 Run the following command to install the SDK: (Only available using Bun to install at the moment.)
 
 <CodeGroup>
+
+```bash npm
+npm i @lit-protocol/auth-services
+```
+
+```bash yarn
+yarn add @lit-protocol/auth-services
+```
+
+```bash pnpm
+pnpm add @lit-protocol/auth-services
+```
 
 ```bash bun
 bun add @lit-protocol/auth-services
@@ -111,17 +93,20 @@ docker run \
     const litAuthServer = createLitAuthServer({
       port: process.env.PORT || 6380,
       network: process.env.NETWORK || "naga-dev",
-      litTxsenderRpcUrl: process.env.LIT_TXSENDER_RPC_URL,
-      litTxsenderPrivateKey: process.env.LIT_TXSENDER_PRIVATE_KEY,
-      enableApiKeyGate: process.env.ENABLE_API_KEY_GATE === "true",
+      litTxsenderRpcUrl: process.env['LIT_TXSENDER_RPC_URL'],
+      litTxsenderPrivateKey: process.env['LIT_TXSENDER_PRIVATE_KEY'],
+      litDelegationRootMnemonic: process.env['LIT_DELEGATION_ROOT_MNEMONIC'],
+      enableApiKeyGate: process.env['ENABLE_API_KEY_GATE'] === "true",
     });
 
     // Start the auth server
     await litAuthServer.start();
     ```
+
   </Step>
 
     <Step title="Start the background worker">
+
 ```ts
 // Worker Setup
 import { startAuthServiceWorker } from "@lit-protocol/auth-services";
@@ -135,13 +120,14 @@ await startAuthServiceWorker();
 // - Redis connection management
 // - Error handling and retry logic for minting jobs
 ```
-  </Step>
 
+  </Step>
 
   <Step title="Setup environment variables">
     Setup the environment variables.
 
     ```bash
+
 # Network configuration (supports naga-dev, naga-test, naga)
 NETWORK=naga-dev
 LOG_LEVEL=debug
@@ -149,6 +135,7 @@ LOG_LEVEL=debug
 # Lit transaction sender settings
 LIT_TXSENDER_RPC_URL=https://yellowstone-rpc.litprotocol.com
 LIT_TXSENDER_PRIVATE_KEY=your_private_key
+LIT_DELEGATION_ROOT_MNEMONIC=
 
 # Redis settings for job queue and caching
 REDIS_URL=redis://user:pass@redis-host.com:12345
@@ -162,10 +149,11 @@ WINDOW_MS=10000
 # Stytch configuration (for OTP services)
 STYTCH_PUBLIC_TOKEN=your_stytch_public_token
 STYTCH_SECRET=your_stytch_secret
-    ```
+
+````
+
   </Step>
 </Steps>
-
 
 ### Lit Login Server
 
@@ -175,9 +163,9 @@ STYTCH_SECRET=your_stytch_secret
 - Discord application client ID and client secret. Follow the official guide: <a href="https://discord.com/developers/docs/topics/oauth2" target="_blank" rel="noreferrer">Discord OAuth2</a>.
 
 <Note>
-You should set the callback/redirect URLs to the same domain as the Login Server. eg.
-> - https://your-domain.com/auth/discord/callback
-> - https://your-domain.com/auth/google/callback
+  You should set the callback/redirect URLs to the same domain as the Login
+  Server. eg. > - https://your-domain.com/auth/discord/callback > -
+  https://your-domain.com/auth/google/callback
 </Note>
 
 #### One-click Deploy (Railway)
@@ -196,7 +184,7 @@ docker run \
   -e DISCORD_CLIENT_ID=your_discord_client_id \
   -e DISCORD_CLIENT_SECRET=your_discord_client_secret \
   ghcr.io/lit-protocol/lit-login-server:latest
-```
+````
 
 #### Use the package (Node.js)
 
@@ -211,7 +199,7 @@ docker run \
       port: 3300,
       host: "0.0.0.0",
       stateExpirySeconds: 30,
-      
+
       // OAuth provider configuration
       socialProviders: {
         google: {
@@ -228,16 +216,21 @@ docker run \
     // Start the login server
     await litLoginServer.start();
     ```
+
   </Step>
 
   <Step title="Setup environment variables">
 ```bash
 # OAuth provider credentials
+
+# Google
 GOOGLE_CLIENT_ID=your_google_client_id
 GOOGLE_CLIENT_SECRET=your_google_client_secret
 
+# Discord
 DISCORD_CLIENT_ID=your_discord_client_id
 DISCORD_CLIENT_SECRET=your_discord_client_secret
+
 ```
   </Step>
 </Steps>
@@ -245,3 +238,4 @@ DISCORD_CLIENT_SECRET=your_discord_client_secret
 <Note>
   When you run a custom Login Server, the `DISCORD_CLIENT_ID` is embedded into the `authMethodId` that Lit nodes use to locate the correct PKP. Make sure the value matches the client ID you used when minting the Discord auth method.
 </Note>
+```

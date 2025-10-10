@@ -1,4 +1,4 @@
-# Migrated to https://github.com/LIT-Protocol/js-sdk/tree/naga/docs
+# :exclamation::exclamation::exclamation: Migrated to https://github.com/LIT-Protocol/js-sdk/tree/naga/docs
 
 # Mintlify Starter Kit
 

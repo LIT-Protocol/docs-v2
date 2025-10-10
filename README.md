@@ -1,3 +1,5 @@
+# Migrated to https://github.com/LIT-Protocol/js-sdk/tree/naga/docs
+
 # Mintlify Starter Kit
 
 Use the starter kit to get your docs deployed and ready to customize.
